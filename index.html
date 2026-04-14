@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<title>ปล่อยวาง</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #1a1a26;
+  --bg4: #22222f;
+  --text: #e8e8ef;
+  --text2: #9999aa;
+  --text3: #666677;
+  --green: #4ade80;
+  --green-dim: rgba(74, 222, 128, 0.12);
+  --green-glow: rgba(74, 222, 128, 0.3);
+  --amber: #fbbf24;
+  --amber-dim: rgba(251, 191, 36, 0.12);
+  --purple: #a78bfa;
+  --purple-dim: rgba(167, 139, 250, 0.12);
+  --rose: #fb7185;
+  --rose-dim: rgba(251, 113, 133, 0.12);
+  --teal: #2dd4bf;
+  --teal-dim: rgba(45, 212, 191, 0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font: 'IBM Plex Sans Thai', 'Noto Sans Thai', sans-serif;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 4px; }
+
+/* ===== APP SHELL ===== */
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  position: relative;
+}
+
+/* ===== HEADER ===== */
+.header {
+  padding: 20px 20px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--teal-dim), var(--purple-dim));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.logo-text {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.header-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--bg4);
+  background: var(--bg2);
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 16px;
+}
+
+.header-btn:hover, .header-btn.active {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+/* ===== STATS BAR ===== */
+.stats-bar {
+  padding: 0 20px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.stat-chip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-chip.control { background: var(--green-dim); color: var(--green); }
+.stat-chip.letgo { background: var(--purple-dim); color: var(--purple); }
+.stat-chip.released { background: var(--teal-dim); color: var(--teal); }
+
+/* ===== NAV TABS ===== */
+.nav-tabs {
+  display: flex;
+  padding: 0 20px;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.nav-tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--text3);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.nav-tab.active {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+.nav-tab:hover:not(.active) {
+  color: var(--text2);
+}
+
+/* ===== PAGES ===== */
+.page {
+  display: none;
+  padding: 0 20px 100px;
+  animation: fadeIn 0.3s ease;
+}
+
+.page.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== CHAT INPUT ===== */
+.chat-area {
+  margin-bottom: 20px;
+}
+
+.chat-input-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--bg4);
+  background: var(--bg2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  outline: none;
+  transition: var(--transition);
+  resize: none;
+  min-height: 48px;
+  max-height: 120px;
+}
+
+.chat-input::placeholder { color: var(--text3); }
+.chat-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-dim); }
+
+.send-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--teal);
+  color: var(--bg);
+  font-size: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.send-btn:hover { transform: scale(1.05); }
+.send-btn:active { transform: scale(0.95); }
+
+/* ===== PENDING LIST ===== */
+.pending-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pending-item {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg2);
+  border: 1px solid var(--bg4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px) scale(0.95); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+.pending-item .text {
+  font-size: 14px;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.classify-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--teal);
+  background: var(--teal-dim);
+  color: var(--teal);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.classify-btn:hover { background: var(--teal); color: var(--bg); }
+
+.classify-all-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--teal);
+  background: transparent;
+  color: var(--teal);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 20px;
+}
+
+.classify-all-btn:hover { background: var(--teal-dim); }
+
+/* ===== MODAL / OVERLAY ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--bg2);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85dvh;
+  overflow-y: auto;
+  padding: 24px 20px 40px;
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg4);
+  margin: 0 auto 20px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.modal-subtitle {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.modal-worry-text {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg3);
+  font-size: 15px;
+  margin-bottom: 24px;
+  border-left: 3px solid var(--teal);
+}
+
+/* ===== CHOICE BUTTONS ===== */
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.choice-btn {
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bg4);
+  background: var(--bg3);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.choice-btn .icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.choice-btn:hover { transform: translateX(4px); border-color: var(--text3); }
+.choice-btn:active { transform: scale(0.98); }
+
+.choice-btn.green .icon { background: var(--green-dim); }
+.choice-btn.amber .icon { background: var(--amber-dim); }
+.choice-btn.rose .icon { background: var(--rose-dim); }
+
+/* ===== ACTION INPUT ===== */
+.action-input-area {
+  margin-top: 16px;
+}
+
+.action-input-area label {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.action-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bg4);
+  background: var(--bg3);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.action-input:focus { border-color: var(--green); }
+
+.modal-confirm-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 16px;
+}
+
+.modal-confirm-btn.green { background: var(--green); color: var(--bg); }
+.modal-confirm-btn.purple { background: var(--purple); color: var(--bg); }
+.modal-confirm-btn.teal { background: var(--teal); color: var(--bg); }
+.modal-confirm-btn:hover { transform: scale(1.02); }
+.modal-confirm-btn:active { transform: scale(0.98); }
+
+/* ===== CARNEGIE QUESTIONS ===== */
+.carnegie-step {
+  margin-bottom: 20px;
+}
+
+.carnegie-q {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.carnegie-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.carnegie-opt {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--bg4);
+  background: var(--bg3);
+  color: var(--text2);
+  font-family: var(--font);
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.carnegie-opt:hover { border-color: var(--text3); color: var(--text); }
+.carnegie-opt.selected { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+
+/* ===== SUMMARY COLUMNS ===== */
+.summary-section {
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.section-header .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.section-header .dot.green { background: var(--green); }
+.section-header .dot.purple { background: var(--purple); }
+.section-header .dot.teal { background: var(--teal); }
+
+.worry-card {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg2);
+  border: 1px solid var(--bg4);
+  margin-bottom: 8px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.worry-card .worry-text {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.worry-card .worry-action {
+  font-size: 12px;
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.worry-card .worry-date {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 6px;
+}
+
+.letgo-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--purple);
+  background: var(--purple-dim);
+  color: var(--purple);
+  font-family: var(--font);
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 8px;
+}
+
+.letgo-btn:hover { background: var(--purple); color: var(--bg); }
+
+/* Released card */
+.worry-card.released {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+/* Fly away animation */
+@keyframes flyAway {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  50% { opacity: 0.5; transform: translateY(-30px) scale(0.9); }
+  100% { opacity: 0; transform: translateY(-80px) scale(0.7); }
+}
+
+.worry-card.flying {
+  animation: flyAway 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ===== WORRY TIME ===== */
+.worry-timer-section {
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--bg2);
+  border: 1px solid var(--bg4);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.timer-display {
+  font-size: 48px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin: 16px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-label {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 16px;
+}
+
+.timer-btn {
+  padding: 12px 32px;
+  border-radius: 24px;
+  border: none;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin: 0 4px;
+}
+
+.timer-btn.start { background: var(--teal); color: var(--bg); }
+.timer-btn.stop { background: var(--rose); color: white; }
+.timer-btn.reset { background: var(--bg3); color: var(--text2); border: 1px solid var(--bg4); }
+.timer-btn:hover { transform: scale(1.05); }
+
+/* ===== GRATITUDE ===== */
+.gratitude-section {
+  padding: 20px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--bg2), var(--bg3));
+  border: 1px solid var(--bg4);
+  margin-bottom: 20px;
+}
+
+.gratitude-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bg4);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  outline: none;
+  margin-top: 12px;
+  transition: var(--transition);
+}
+
+.gratitude-input:focus { border-color: var(--amber); }
+
+.gratitude-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gratitude-item {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--amber-dim);
+  color: var(--amber);
+  font-size: 13px;
+  animation: slideIn 0.3s ease;
+}
+
+/* ===== HISTORY ===== */
+.history-day {
+  margin-bottom: 24px;
+}
+
+.history-date {
+  font-size: 13px;
+  color: var(--text3);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--bg3);
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 12px 24px;
+  border-radius: 24px;
+  background: var(--bg3);
+  border: 1px solid var(--bg4);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 200;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text3);
+}
+
+.empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+.empty-state .msg { font-size: 14px; line-height: 1.6; }
+
+/* ===== DELETE BTN ===== */
+.delete-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+.delete-btn:hover { background: var(--rose-dim); color: var(--rose); }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">🍃</div>
+      <div class="logo-text">ปล่อยวาง</div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="showPage('timer')" title="Worry Time" id="timerTabBtn">⏱️</button>
+      <button class="header-btn" onclick="showPage('history')" title="ประวัติ" id="historyTabBtn">📅</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-chip control">✅ ควบคุมได้ <span id="statControl">0</span></div>
+    <div class="stat-chip letgo">🍃 ปล่อยวาง <span id="statLetgo">0</span></div>
+    <div class="stat-chip released">✨ ปล่อยแล้ว <span id="statReleased">0</span></div>
+  </div>
+
+  <!-- Nav -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home')" id="homeTab">เพิ่มความกังวล</button>
+    <button class="nav-tab" onclick="showPage('summary')" id="summaryTab">สรุป</button>
+    <button class="nav-tab" onclick="showPage('gratitude')" id="gratitudeTab">🙏 ขอบคุณ</button>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div class="page active" id="homePage">
+    <div class="chat-area">
+      <div class="chat-input-wrap">
+        <textarea class="chat-input" id="worryInput" placeholder="พิมพ์เรื่องที่กังวล..." rows="1" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" onclick="addWorry()">↑</button>
+      </div>
+    </div>
+
+    <div class="pending-list" id="pendingList"></div>
+    <div id="classifyAllWrap"></div>
+
+    <div class="empty-state" id="homeEmpty">
+      <div class="icon">💭</div>
+      <div class="msg">พิมพ์เรื่องที่กังวลได้เลย<br>ใส่ทีละเรื่อง รัวๆ ได้</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY PAGE -->
+  <div class="page" id="summaryPage">
+    <!-- Controllable -->
+    <div class="summary-section" id="controlSection">
+      <div class="section-header"><div class="dot green"></div> ควบคุมได้</div>
+      <div id="controlList"></div>
+    </div>
+    <!-- Let go -->
+    <div class="summary-section" id="letgoSection">
+      <div class="section-header"><div class="dot purple"></div> ปล่อยวาง</div>
+      <div id="letgoList"></div>
+    </div>
+    <!-- Released -->
+    <div class="summary-section" id="releasedSection">
+      <div class="section-header"><div class="dot teal"></div> ปล่อยวางแล้ว</div>
+      <div id="releasedList"></div>
+    </div>
+
+    <div class="empty-state" id="summaryEmpty">
+      <div class="icon">📋</div>
+      <div class="msg">ยังไม่มีเรื่องที่จัดฝั่ง<br>ไปเพิ่มความกังวลก่อน</div>
+    </div>
+  </div>
+
+  <!-- TIMER PAGE -->
+  <div class="page" id="timerPage">
+    <div class="worry-timer-section">
+      <div style="font-size:24px; margin-bottom:4px;">⏱️</div>
+      <div style="font-size:16px; font-weight:600;">Worry Time</div>
+      <div class="timer-label">กำหนดเวลากังวล 15 นาที<br>นอกเวลานี้ ปล่อยวางไว้ก่อน</div>
+      <div class="timer-display" id="timerDisplay">15:00</div>
+      <div>
+        <button class="timer-btn start" id="timerStartBtn" onclick="toggleTimer()">เริ่ม</button>
+        <button class="timer-btn reset" onclick="resetTimer()">รีเซ็ต</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRATITUDE PAGE -->
+  <div class="page" id="gratitudePage">
+    <div class="gratitude-section">
+      <div style="font-size:24px; text-align:center;">🙏</div>
+      <div style="font-size:16px; font-weight:600; text-align:center; margin-top:4px;">Gratitude Flip</div>
+      <div style="font-size:13px; color:var(--text2); text-align:center; margin-top:6px; line-height:1.6;">จากเรื่องกังวลทั้งหมด<br>มีอะไรที่ขอบคุณได้บ้าง?</div>
+      <div class="chat-input-wrap" style="margin-top:16px;">
+        <input class="gratitude-input" id="gratitudeInput" placeholder="พิมพ์สิ่งที่ขอบคุณ..." onkeydown="if(event.key==='Enter')addGratitude()">
+        <button class="send-btn" onclick="addGratitude()" style="width:42px;height:42px;font-size:16px;">♥</button>
+      </div>
+      <div class="gratitude-list" id="gratitudeList"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY PAGE -->
+  <div class="page" id="historyPage">
+    <div id="historyContent"></div>
+    <div class="empty-state" id="historyEmpty">
+      <div class="icon">📅</div>
+      <div class="msg">ยังไม่มีประวัติ</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA =====
+let worries = JSON.parse(localStorage.getItem('pw_worries') || '[]');
+let gratitudes = JSON.parse(localStorage.getItem('pw_gratitudes') || '[]');
+let timerInterval = null;
+let timerSeconds = 15 * 60;
+let timerRunning = false;
+let currentClassifyIndex = 0;
+let classifyQueue = [];
+
+const encouragements = [
+  'จัดการได้อีกเรื่อง 💪',
+  'เก่งมาก ทำต่อไป ✨',
+  'ปล่อยวางได้แล้ว 🍃',
+  'ใจเบาขึ้นแล้วนะ 🌿',
+  'ทำได้ดีมาก 👏',
+  'หนึ่งก้าวข้างหน้า 🚶',
+  'คุณจัดการได้ 🔥',
+  'วางลงได้แล้ว ☁️',
+];
+
+// ===== SAVE =====
+function save() {
+  localStorage.setItem('pw_worries', JSON.stringify(worries));
+  localStorage.setItem('pw_gratitudes', JSON.stringify(gratitudes));
+  updateStats();
+}
+
+// ===== ADD WORRY =====
+function addWorry() {
+  const input = document.getElementById('worryInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  worries.push({
+    id: Date.now(),
+    text,
+    status: 'pending', // pending, control, letgo, released
+    action: '',
+    carnegie: {},
+    date: new Date().toISOString(),
+  });
+
+  input.value = '';
+  autoResize(input);
+  save();
+  renderHome();
+  showToast('เพิ่มแล้ว ✍️');
+}
+
+// Enter to send
+document.getElementById('worryInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    addWorry();
+  }
+});
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+// ===== RENDER HOME =====
+function renderHome() {
+  const pending = worries.filter(w => w.status === 'pending');
+  const list = document.getElementById('pendingList');
+  const wrap = document.getElementById('classifyAllWrap');
+  const empty = document.getElementById('homeEmpty');
+
+  if (pending.length === 0) {
+    list.innerHTML = '';
+    wrap.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+
+  list.innerHTML = pending.map(w => `
+    <div class="pending-item" id="pending-${w.id}">
+      <span class="text">${escHtml(w.text)}</span>
+      <button class="classify-btn" onclick="startClassify(${w.id})">จัดฝั่ง</button>
+      <button class="delete-btn" onclick="deleteWorry(${w.id})" title="ลบ">✕</button>
+    </div>
+  `).join('');
+
+  if (pending.length > 1) {
+    wrap.innerHTML = `<button class="classify-all-btn" onclick="classifyAll()">จัดฝั่งทั้งหมด (${pending.length} เรื่อง)</button>`;
+  } else {
+    wrap.innerHTML = '';
+  }
+}
+
+function deleteWorry(id) {
+  worries = worries.filter(w => w.id !== id);
+  save();
+  renderHome();
+  renderSummary();
+}
+
+// ===== CLASSIFY =====
+function startClassify(id) {
+  classifyQueue = [id];
+  currentClassifyIndex = 0;
+  showClassifyModal(id);
+}
+
+function classifyAll() {
+  const pending = worries.filter(w => w.status === 'pending');
+  classifyQueue = pending.map(w => w.id);
+  currentClassifyIndex = 0;
+  showClassifyModal(classifyQueue[0]);
+}
+
+function showClassifyModal(id) {
+  const w = worries.find(x => x.id === id);
+  if (!w) return;
+
+  const progress = classifyQueue.length > 1
+    ? `<div style="font-size:12px;color:var(--text3);margin-bottom:16px;">${currentClassifyIndex + 1} / ${classifyQueue.length}</div>`
+    : '';
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-handle"></div>
+    ${progress}
+    <div class="modal-title">เรื่องนี้...</div>
+    <div class="modal-worry-text">${escHtml(w.text)}</div>
+    <div class="modal-subtitle">ลงมือทำเองได้ไหม?</div>
+    <div class="choices">
+      <button class="choice-btn green" onclick="classifyStep2(${id}, 'control')">
+        <div class="icon">🟢</div>
+        <div>ทำได้เลย</div>
+      </button>
+      <button class="choice-btn amber" onclick="classifyStep2(${id}, 'partial')">
+        <div class="icon">🟡</div>
+        <div>ทำได้บางส่วน</div>
+      </button>
+      <button class="choice-btn rose" onclick="classifyStep2(${id}, 'letgo')">
+        <div class="icon">🔴</div>
+        <div>ทำอะไรไม่ได้เลย</div>
+      </button>
+    </div>
+  `;
+
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function classifyStep2(id, result) {
+  const w = worries.find(x => x.id === id);
+
+  if (result === 'control' || result === 'partial') {
+    // Ask for action step
+    const partialNote = result === 'partial'
+      ? `<div style="font-size:13px;color:var(--amber);margin-bottom:16px;">ส่วนที่ทำได้ → โฟกัสตรงนั้น</div>`
+      : '';
+
+    document.getElementById('modalContent').innerHTML = `
+      <div class="modal-handle"></div>
+      <div class="modal-title">ต้องทำอะไร?</div>
+      <div class="modal-worry-text">${escHtml(w.text)}</div>
+      ${partialNote}
+      <div class="action-input-area">
+        <label>เขียน action step สั้นๆ</label>
+        <input class="action-input" id="actionInput" placeholder="เช่น พรุ่งนี้ทำส่วน A ก่อน" onkeydown="if(event.key==='Enter')finishClassify(${id},'control')">
+      </div>
+      <button class="modal-confirm-btn green" onclick="finishClassify(${id}, 'control')">✅ เพิ่ม Action</button>
+    `;
+    setTimeout(() => document.getElementById('actionInput')?.focus(), 300);
+  } else {
+    // Let go → Carnegie questions
+    showCarnegie(id);
+  }
+}
+
+// ===== CARNEGIE =====
+function showCarnegie(id) {
+  const w = worries.find(x => x.id === id);
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-handle"></div>
+    <div class="modal-title">ถามตัวเอง 3 ข้อ</div>
+    <div class="modal-worry-text">${escHtml(w.text)}</div>
+
+    <div class="carnegie-step">
+      <div class="carnegie-q">1. สิ่งที่แย่ที่สุดที่จะเกิดคืออะไร?</div>
+      <div class="carnegie-options">
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'worst', 'ไม่มีผลกระทบมาก')">ไม่มีผลกระทบมาก</button>
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'worst', 'มีผลบ้าง แต่รับได้')">มีผลบ้าง แต่รับได้</button>
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'worst', 'ผลกระทบหนัก')">ผลกระทบหนัก</button>
+      </div>
+    </div>
+
+    <div class="carnegie-step">
+      <div class="carnegie-q">2. ยอมรับสิ่งที่แย่สุดได้ไหม?</div>
+      <div class="carnegie-options">
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'accept', 'ยอมรับได้')">ยอมรับได้</button>
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'accept', 'ต้องใช้เวลา')">ต้องใช้เวลา</button>
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'accept', 'ยากมาก')">ยากมาก</button>
+      </div>
+    </div>
+
+    <div class="carnegie-step">
+      <div class="carnegie-q">3. ทำอะไรได้บ้างเพื่อให้ดีขึ้น?</div>
+      <div class="carnegie-options">
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'improve', 'รอเวลา')">รอเวลา</button>
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'improve', 'ปรึกษาคนอื่น')">ปรึกษาคนอื่น</button>
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'improve', 'ทำใจ')">ทำใจ</button>
+        <button class="carnegie-opt" onclick="selectCarnegie(this, 'improve', 'ไม่มีอะไรทำได้')">ไม่มีอะไรทำได้</button>
+      </div>
+    </div>
+
+    <button class="modal-confirm-btn purple" onclick="finishClassify(${id}, 'letgo')">🍃 จัดเป็นปล่อยวาง</button>
+  `;
+}
+
+const carnegieData = {};
+function selectCarnegie(el, key, val) {
+  // Deselect siblings
+  el.parentElement.querySelectorAll('.carnegie-opt').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  carnegieData[key] = val;
+}
+
+// ===== FINISH CLASSIFY =====
+function finishClassify(id, status) {
+  const w = worries.find(x => x.id === id);
+  if (!w) return;
+
+  w.status = status;
+
+  if (status === 'control') {
+    const actionInput = document.getElementById('actionInput');
+    w.action = actionInput ? actionInput.value.trim() : '';
+  }
+
+  if (status === 'letgo') {
+    w.carnegie = { ...carnegieData };
+  }
+
+  save();
+  renderHome();
+  renderSummary();
+
+  // Next in queue?
+  currentClassifyIndex++;
+  if (currentClassifyIndex < classifyQueue.length) {
+    showClassifyModal(classifyQueue[currentClassifyIndex]);
+    showToast(randomEncouragement());
+  } else {
+    closeModal();
+    showToast(randomEncouragement());
+  }
+}
+
+// ===== RELEASE =====
+function releaseWorry(id) {
+  const w = worries.find(x => x.id === id);
+  if (!w) return;
+
+  const card = document.getElementById(`card-${id}`);
+  if (card) {
+    card.classList.add('flying');
+    setTimeout(() => {
+      w.status = 'released';
+      w.releasedDate = new Date().toISOString();
+      save();
+      renderSummary();
+      showToast('ปล่อยวางแล้ว 🍃');
+    }, 800);
+  } else {
+    w.status = 'released';
+    w.releasedDate = new Date().toISOString();
+    save();
+    renderSummary();
+    showToast('ปล่อยวางแล้ว 🍃');
+  }
+}
+
+// ===== RENDER SUMMARY =====
+function renderSummary() {
+  const control = worries.filter(w => w.status === 'control');
+  const letgo = worries.filter(w => w.status === 'letgo');
+  const released = worries.filter(w => w.status === 'released');
+
+  const empty = document.getElementById('summaryEmpty');
+
+  if (control.length === 0 && letgo.length === 0 && released.length === 0) {
+    empty.style.display = 'block';
+    document.getElementById('controlSection').style.display = 'none';
+    document.getElementById('letgoSection').style.display = 'none';
+    document.getElementById('releasedSection').style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+
+  // Control
+  document.getElementById('controlSection').style.display = control.length ? 'block' : 'none';
+  document.getElementById('controlList').innerHTML = control.map(w => `
+    <div class="worry-card" id="card-${w.id}">
+      <div class="worry-text">${escHtml(w.text)}</div>
+      ${w.action ? `<div class="worry-action">→ ${escHtml(w.action)}</div>` : ''}
+      <div class="worry-date">${formatDate(w.date)}</div>
+      <button class="delete-btn" onclick="deleteWorry(${w.id})" style="position:absolute;top:10px;right:10px;" title="ลบ">✕</button>
+    </div>
+  `).join('');
+
+  // Let go
+  document.getElementById('letgoSection').style.display = letgo.length ? 'block' : 'none';
+  document.getElementById('letgoList').innerHTML = letgo.map(w => `
+    <div class="worry-card" id="card-${w.id}">
+      <div class="worry-text">${escHtml(w.text)}</div>
+      <div class="worry-date">${formatDate(w.date)}</div>
+      <button class="letgo-btn" onclick="releaseWorry(${w.id})">🍃 ปล่อยวาง</button>
+      <button class="delete-btn" onclick="deleteWorry(${w.id})" style="position:absolute;top:10px;right:10px;" title="ลบ">✕</button>
+    </div>
+  `).join('');
+
+  // Released
+  document.getElementById('releasedSection').style.display = released.length ? 'block' : 'none';
+  document.getElementById('releasedList').innerHTML = released.map(w => `
+    <div class="worry-card released">
+      <div class="worry-text" style="text-decoration:line-through;">${escHtml(w.text)}</div>
+      <div class="worry-date">${formatDate(w.releasedDate || w.date)}</div>
+      <button class="delete-btn" onclick="deleteWorry(${w.id})" style="position:absolute;top:10px;right:10px;" title="ลบ">✕</button>
+    </div>
+  `).join('');
+}
+
+// ===== GRATITUDE =====
+function addGratitude() {
+  const input = document.getElementById('gratitudeInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  gratitudes.push({
+    id: Date.now(),
+    text,
+    date: new Date().toISOString(),
+  });
+
+  input.value = '';
+  save();
+  renderGratitude();
+  showToast('ขอบคุณที่ขอบคุณ 🙏');
+}
+
+function renderGratitude() {
+  const list = document.getElementById('gratitudeList');
+  const today = new Date().toDateString();
+  const todayItems = gratitudes.filter(g => new Date(g.date).toDateString() === today);
+
+  list.innerHTML = todayItems.map(g => `
+    <div class="gratitude-item">🙏 ${escHtml(g.text)}</div>
+  `).join('');
+}
+
+// ===== TIMER =====
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timerStartBtn').textContent = 'เริ่ม';
+    document.getElementById('timerStartBtn').className = 'timer-btn start';
+  } else {
+    timerRunning = true;
+    document.getElementById('timerStartBtn').textContent = 'หยุด';
+    document.getElementById('timerStartBtn').className = 'timer-btn stop';
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerSeconds = 0;
+        document.getElementById('timerStartBtn').textContent = 'เริ่ม';
+        document.getElementById('timerStartBtn').className = 'timer-btn start';
+        showToast('หมดเวลากังวล! ปล่อยวางได้แล้ว 🍃');
+      }
+      updateTimerDisplay();
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = 15 * 60;
+  updateTimerDisplay();
+  document.getElementById('timerStartBtn').textContent = 'เริ่ม';
+  document.getElementById('timerStartBtn').className = 'timer-btn start';
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  document.getElementById('timerDisplay').textContent =
+    `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
+// ===== HISTORY =====
+function renderHistory() {
+  const classified = worries.filter(w => w.status !== 'pending');
+  if (classified.length === 0) {
+    document.getElementById('historyEmpty').style.display = 'block';
+    document.getElementById('historyContent').innerHTML = '';
+    return;
+  }
+
+  document.getElementById('historyEmpty').style.display = 'none';
+
+  // Group by date
+  const groups = {};
+  classified.forEach(w => {
+    const day = new Date(w.date).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+    if (!groups[day]) groups[day] = [];
+    groups[day].push(w);
+  });
+
+  let html = '';
+  Object.keys(groups).reverse().forEach(day => {
+    html += `<div class="history-day"><div class="history-date">${day}</div>`;
+    groups[day].forEach(w => {
+      const statusLabel = w.status === 'control' ? '✅ ควบคุมได้'
+        : w.status === 'letgo' ? '🍃 ปล่อยวาง'
+        : '✨ ปล่อยแล้ว';
+      html += `
+        <div class="worry-card ${w.status === 'released' ? 'released' : ''}">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">${statusLabel}</div>
+          <div class="worry-text">${escHtml(w.text)}</div>
+          ${w.action ? `<div class="worry-action">→ ${escHtml(w.action)}</div>` : ''}
+        </div>
+      `;
+    });
+    html += '</div>';
+  });
+
+  document.getElementById('historyContent').innerHTML = html;
+}
+
+// ===== NAVIGATION =====
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.header-btn').forEach(b => b.classList.remove('active'));
+
+  document.getElementById(page + 'Page').classList.add('active');
+
+  if (page === 'home') document.getElementById('homeTab').classList.add('active');
+  if (page === 'summary') { document.getElementById('summaryTab').classList.add('active'); renderSummary(); }
+  if (page === 'gratitude') { document.getElementById('gratitudeTab').classList.add('active'); renderGratitude(); }
+  if (page === 'timer') document.getElementById('timerTabBtn').classList.add('active');
+  if (page === 'history') { document.getElementById('historyTabBtn').classList.add('active'); renderHistory(); }
+}
+
+// ===== STATS =====
+function updateStats() {
+  document.getElementById('statControl').textContent = worries.filter(w => w.status === 'control').length;
+  document.getElementById('statLetgo').textContent = worries.filter(w => w.status === 'letgo').length;
+  document.getElementById('statReleased').textContent = worries.filter(w => w.status === 'released').length;
+}
+
+// ===== UTILS =====
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function randomEncouragement() {
+  return encouragements[Math.floor(Math.random() * encouragements.length)];
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+
+// ===== INIT =====
+renderHome();
+renderSummary();
+updateStats();
+
+// Register SW
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
