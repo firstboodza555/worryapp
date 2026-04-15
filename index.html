@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<title>ปล่อยวาง</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a26;--bg4:#22222f;--text:#e8e8ef;--text2:#9999aa;--text3:#666677;--green:#4ade80;--green-dim:rgba(74,222,128,.12);--amber:#fbbf24;--amber-dim:rgba(251,191,36,.12);--purple:#a78bfa;--purple-dim:rgba(167,139,250,.12);--rose:#fb7185;--rose-dim:rgba(251,113,133,.12);--teal:#2dd4bf;--teal-dim:rgba(45,212,191,.12);--blue:#60a5fa;--blue-dim:rgba(96,165,250,.12);--radius:16px;--radius-sm:10px;--font:'IBM Plex Sans Thai','Noto Sans Thai',sans-serif;--tr:.3s cubic-bezier(.4,0,.2,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px}
+.app{max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
+.header{padding:16px 20px 10px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--teal-dim),var(--purple-dim));display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-text{font-size:18px;font-weight:600;letter-spacing:-.5px}
+.header-actions{display:flex;gap:4px}
+.hbtn{width:36px;height:36px;border-radius:10px;border:1px solid var(--bg4);background:var(--bg2);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--tr);font-size:14px}
+.hbtn:hover,.hbtn.active{background:var(--bg3);color:var(--text)}
+.stats-bar{padding:0 20px;margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap}
+.sc{padding:4px 10px;border-radius:16px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:4px}
+.sc.c1{background:var(--green-dim);color:var(--green)}.sc.c2{background:var(--purple-dim);color:var(--purple)}.sc.c3{background:var(--teal-dim);color:var(--teal)}.sc.c4{background:var(--amber-dim);color:var(--amber)}
+.nav{display:flex;padding:0 20px;gap:3px;margin-bottom:12px}
+.nt{flex:1;padding:8px 4px;border-radius:var(--radius-sm);border:none;background:transparent;color:var(--text3);font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;transition:var(--tr);text-align:center}
+.nt.active{background:var(--bg3);color:var(--text)}.nt:hover:not(.active){color:var(--text2)}
+.page{display:none;padding:0 20px 100px;animation:fi .3s ease}.page.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes si{from{opacity:0;transform:translateX(-20px) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fa{0%{opacity:1;transform:translateY(0) scale(1)}50%{opacity:.5;transform:translateY(-30px) scale(.9)}100%{opacity:0;transform:translateY(-80px) scale(.7)}}
+.ciw{display:flex;gap:8px;align-items:flex-end}
+.ci{flex:1;padding:12px 14px;border-radius:var(--radius);border:1px solid var(--bg4);background:var(--bg2);color:var(--text);font-family:var(--font);font-size:15px;outline:none;transition:var(--tr);resize:none;min-height:46px;max-height:120px}
+.ci::placeholder{color:var(--text3)}.ci:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-dim)}
+.sb{width:46px;height:46px;border-radius:var(--radius);border:none;background:var(--teal);color:var(--bg);font-size:18px;cursor:pointer;transition:var(--tr);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.sb:hover{transform:scale(1.05)}.sb:active{transform:scale(.95)}
+.pl{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.pi{padding:12px 14px;border-radius:var(--radius-sm);background:var(--bg2);border:1px solid var(--bg4);display:flex;align-items:center;gap:8px;animation:si .3s cubic-bezier(.34,1.56,.64,1)}
+.pi .tx{font-size:13px;flex:1}
+.pi select{padding:4px 8px;border-radius:6px;border:1px solid var(--bg4);background:var(--bg3);color:var(--text2);font-family:var(--font);font-size:11px;outline:none}
+.cb{padding:6px 12px;border-radius:8px;border:1px solid var(--teal);background:var(--teal-dim);color:var(--teal);font-family:var(--font);font-size:11px;font-weight:500;cursor:pointer;transition:var(--tr);white-space:nowrap}
+.cb:hover{background:var(--teal);color:var(--bg)}
+.cab{width:100%;padding:10px;border-radius:var(--radius-sm);border:1px dashed var(--teal);background:transparent;color:var(--teal);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:var(--tr);margin-bottom:16px}
+.cab:hover{background:var(--teal-dim)}
+.mo{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.mo.active{display:flex}
+.md{background:var(--bg2);border-radius:24px 24px 0 0;width:100%;max-width:480px;max-height:90dvh;overflow-y:auto;padding:20px 20px 36px;animation:su .4s cubic-bezier(.34,1.56,.64,1)}
+.mh{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:0 auto 16px}
+.mt{font-size:17px;font-weight:600;margin-bottom:4px}
+.ms{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.5}
+.mw{padding:12px 14px;border-radius:var(--radius-sm);background:var(--bg3);font-size:14px;margin-bottom:20px;border-left:3px solid var(--teal)}
+.si{display:flex;align-items:center;gap:5px;margin-bottom:16px}
+.sd{width:7px;height:7px;border-radius:50%;background:var(--bg4);transition:var(--tr)}
+.sd.a{background:var(--teal);width:20px;border-radius:4px}.sd.d{background:var(--green)}
+.ch{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.chb{padding:14px;border-radius:var(--radius-sm);border:1px solid var(--bg4);background:var(--bg3);color:var(--text);font-family:var(--font);font-size:13px;cursor:pointer;transition:var(--tr);text-align:left;display:flex;align-items:center;gap:10px}
+.chb .ic{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.chb:hover{transform:translateX(4px);border-color:var(--text3)}.chb:active{transform:scale(.98)}
+.chb.g .ic{background:var(--green-dim)}.chb.a .ic{background:var(--amber-dim)}.chb.r .ic{background:var(--rose-dim)}.chb.b .ic{background:var(--blue-dim)}.chb.p .ic{background:var(--purple-dim)}.chb.t .ic{background:var(--teal-dim)}
+.cg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.cp{padding:8px 14px;border-radius:16px;border:1px solid var(--bg4);background:var(--bg3);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;transition:var(--tr)}
+.cp:hover{border-color:var(--text3);color:var(--text)}
+.cp.sel{border-color:var(--amber);color:var(--amber);background:var(--amber-dim)}
+.ai{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--bg4);background:var(--bg3);color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:var(--tr)}
+.ai:focus{border-color:var(--green)}
+.mcb{width:100%;padding:12px;border-radius:var(--radius-sm);border:none;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:var(--tr);margin-top:12px}
+.mcb.g{background:var(--green);color:var(--bg)}.mcb.p{background:var(--purple);color:var(--bg)}.mcb.t{background:var(--teal);color:var(--bg)}.mcb.b{background:var(--blue);color:var(--bg)}.mcb.am{background:var(--amber);color:var(--bg)}
+.mcb:hover{transform:scale(1.02)}.mcb:active{transform:scale(.98)}
+.skb{width:100%;padding:10px;border-radius:var(--radius-sm);border:none;background:transparent;color:var(--text3);font-family:var(--font);font-size:12px;cursor:pointer;transition:var(--tr);margin-top:6px}
+.skb:hover{color:var(--text2)}
+.ss{margin-bottom:20px}
+.sh{display:flex;align-items:center;gap:6px;margin-bottom:10px;font-size:13px;font-weight:600}
+.sh .dt{width:7px;height:7px;border-radius:50%}
+.sh .dt.g{background:var(--green)}.sh .dt.p{background:var(--purple)}.sh .dt.tl{background:var(--teal)}
+.wc{padding:12px 14px;border-radius:var(--radius-sm);background:var(--bg2);border:1px solid var(--bg4);margin-bottom:6px;transition:var(--tr);position:relative;overflow:hidden}
+.wc .wt{font-size:13px;margin-bottom:4px}.wc .wa{font-size:11px;color:var(--green)}.wc .wm{font-size:10px;color:var(--text3);margin-top:4px}.wc .wd{font-size:10px;color:var(--amber);margin-top:3px}
+.lb{padding:6px 12px;border-radius:6px;border:1px solid var(--purple);background:var(--purple-dim);color:var(--purple);font-family:var(--font);font-size:11px;cursor:pointer;transition:var(--tr);margin-top:6px}
+.lb:hover{background:var(--purple);color:var(--bg)}
+.wc.rel{opacity:.5;border-style:dashed}.wc.fly{animation:fa .8s cubic-bezier(.4,0,.2,1) forwards}
+.db{width:26px;height:26px;border-radius:5px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:var(--tr);flex-shrink:0}
+.db:hover{background:var(--rose-dim);color:var(--rose)}
+/* Timer */
+.ts{padding:20px;border-radius:var(--radius);background:var(--bg2);border:1px solid var(--bg4);margin-bottom:16px;text-align:center}
+.td{font-size:44px;font-weight:300;letter-spacing:2px;margin:12px 0;font-variant-numeric:tabular-nums}
+.tb{padding:10px 28px;border-radius:20px;border:none;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:var(--tr);margin:0 3px}
+.tb.st{background:var(--teal);color:var(--bg)}.tb.sp{background:var(--rose);color:#fff}.tb.rs{background:var(--bg3);color:var(--text2);border:1px solid var(--bg4)}
+.tb:hover{transform:scale(1.05)}
+/* Breathing */
+.bs{padding:24px 20px;border-radius:var(--radius);background:var(--bg2);border:1px solid var(--bg4);text-align:center;margin-bottom:16px}
+.bcw{width:180px;height:180px;margin:20px auto;position:relative;display:flex;align-items:center;justify-content:center}
+.bc{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,var(--teal),transparent);opacity:.6;transition:all 1s ease-in-out}
+.bc.inh{width:160px;height:160px;opacity:1}.bc.hld{width:160px;height:160px;opacity:.8}.bc.exh{width:70px;height:70px;opacity:.5}
+.bt{position:absolute;font-size:15px;font-weight:500;color:var(--text)}
+/* Quote card */
+.qc{padding:20px;border-radius:var(--radius);background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--bg4);margin-bottom:16px;text-align:center}
+.qq{font-size:14px;line-height:1.7;margin:12px 0;font-style:italic;color:var(--text)}
+.qa{font-size:11px;color:var(--text2)}
+/* Checkin */
+.ck{padding:20px;border-radius:var(--radius);background:var(--bg2);border:1px solid var(--bg4);margin-bottom:16px;text-align:center}
+.ck-levels{display:flex;justify-content:center;gap:8px;margin:16px 0}
+.ck-lv{width:44px;height:44px;border-radius:50%;border:2px solid var(--bg4);background:var(--bg3);font-size:20px;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center}
+.ck-lv:hover{transform:scale(1.15)}.ck-lv.sel{border-color:var(--teal);background:var(--teal-dim);transform:scale(1.15)}
+/* Mood graph */
+.mg{padding:16px;border-radius:var(--radius);background:var(--bg2);border:1px solid var(--bg4);margin-bottom:16px}
+.mg canvas{width:100%;height:120px}
+/* Pattern */
+.pp{padding:16px;border-radius:var(--radius);background:var(--bg2);border:1px solid var(--bg4);margin-bottom:16px}
+.pp-bar{display:flex;align-items:flex-end;gap:4px;height:80px;margin-top:12px}
+.pp-b{flex:1;background:var(--amber-dim);border-radius:4px 4px 0 0;transition:var(--tr);position:relative;min-height:4px}
+.pp-b .pp-l{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:9px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-b .pp-v{position:absolute;top:-16px;left:0;right:0;text-align:center;font-size:10px;color:var(--amber)}
+/* Info card */
+.ic{padding:14px;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--bg4);font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px}
+/* Gratitude */
+.gs{padding:16px;border-radius:var(--radius);background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--bg4);margin-bottom:16px}
+.gi{padding:8px 12px;border-radius:6px;background:var(--amber-dim);color:var(--amber);font-size:12px;margin-top:6px;animation:si .3s ease}
+/* History */
+.hd{margin-bottom:20px}
+.hdl{font-size:12px;color:var(--text3);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--bg3)}
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);padding:10px 20px;border-radius:20px;background:var(--bg3);border:1px solid var(--bg4);color:var(--text);font-family:var(--font);font-size:12px;font-weight:500;z-index:200;opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.es{text-align:center;padding:30px 20px;color:var(--text3)}.es .ei{font-size:36px;margin-bottom:10px}.es .em{font-size:13px;line-height:1.5}
+.fb{position:fixed;bottom:20px;right:20px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--blue));border:none;color:#fff;font-size:20px;cursor:pointer;z-index:50;box-shadow:0 4px 16px rgba(45,212,191,.3);transition:var(--tr);display:flex;align-items:center;justify-content:center}
+.fb:hover{transform:scale(1.1)}.fb:active{transform:scale(.95)}
+.streak-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:16px;background:var(--rose-dim);color:var(--rose);font-size:11px;font-weight:600}
+.research-card{padding:14px;border-radius:var(--radius-sm);background:var(--blue-dim);border:1px solid rgba(96,165,250,.2);font-size:12px;color:var(--blue);line-height:1.5;margin-bottom:12px;text-align:center}
+.dare-s{padding:14px;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--bg4);margin-bottom:10px;transition:var(--tr)}
+.dare-s.as{border-color:var(--blue)}.dare-s.ds{border-color:var(--green);opacity:.7}
+.dare-btn{width:100%;padding:10px;border-radius:6px;border:none;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:var(--tr);margin-top:8px}
+/* Tag */
+.tag-g{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tag{padding:3px 8px;border-radius:10px;font-size:10px;font-weight:500}
+.tag.work{background:var(--blue-dim);color:var(--blue)}.tag.money{background:var(--green-dim);color:var(--green)}.tag.health{background:var(--rose-dim);color:var(--rose)}.tag.rel{background:var(--purple-dim);color:var(--purple)}.tag.other{background:var(--amber-dim);color:var(--amber)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="header">
+    <div class="logo"><div class="logo-icon">🍃</div><div class="logo-text">ปล่อยวาง</div></div>
+    <div class="header-actions">
+      <button class="hbtn" onclick="SP('breathing')" id="hBreath">🫁</button>
+      <button class="hbtn" onclick="SP('timer')" id="hTimer">⏱️</button>
+      <button class="hbtn" onclick="SP('stats')" id="hStats">📊</button>
+      <button class="hbtn" onclick="SP('history')" id="hHist">📅</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="sc c1">✅ <span id="s1">0</span></div>
+    <div class="sc c2">🍃 <span id="s2">0</span></div>
+    <div class="sc c3">✨ <span id="s3">0</span></div>
+    <div class="sc c4" id="streakChip" style="display:none">🔥 <span id="s4">0</span> วัน</div>
+  </div>
+  <div class="nav">
+    <button class="nt active" onclick="SP('home')" id="tHome">💭 เพิ่ม</button>
+    <button class="nt" onclick="SP('summary')" id="tSum">📋 สรุป</button>
+    <button class="nt" onclick="SP('gratitude')" id="tGrat">🙏</button>
+  </div>
+
+  <!-- DAILY QUOTE + CHECKIN -->
+  <div class="page active" id="homePage">
+    <div class="qc" id="quoteCard"></div>
+    <div class="ck" id="checkinCard" style="display:none">
+      <div style="font-size:14px;font-weight:600">วันนี้ความกังวลระดับไหน?</div>
+      <div class="ck-levels" id="checkinLevels"></div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div class="ciw">
+        <textarea class="ci" id="wI" placeholder="พิมพ์เรื่องที่กังวล..." rows="1" oninput="aR(this)"></textarea>
+        <button class="sb" onclick="addW()">↑</button>
+      </div>
+    </div>
+    <div class="pl" id="pL"></div>
+    <div id="caW"></div>
+    <div class="es" id="hE"><div class="ei">💭</div><div class="em">พิมพ์เรื่องที่กังวลได้เลย<br>ใส่ทีละเรื่อง รัวๆ ได้</div></div>
+  </div>
+
+  <div class="page" id="summaryPage">
+    <div class="research-card">📊 จากงานวิจัย: 91% ของสิ่งที่กังวลไม่เคยเกิดขึ้นจริง<br><span style="font-size:10px;opacity:.7">LaFreniere & Newman, 2016 — Penn State University</span></div>
+    <div class="ss" id="ctrlS"><div class="sh"><div class="dt g"></div> ควบคุมได้</div><div id="ctrlL"></div></div>
+    <div class="ss" id="lgS"><div class="sh"><div class="dt p"></div> ปล่อยวาง</div><div id="lgL"></div></div>
+    <div class="ss" id="rlS"><div class="sh"><div class="dt tl"></div> ปล่อยวางแล้ว</div><div id="rlL"></div></div>
+    <div class="es" id="sE"><div class="ei">📋</div><div class="em">ยังไม่มีเรื่องที่จัดฝั่ง</div></div>
+  </div>
+
+  <div class="page" id="breathingPage">
+    <div class="bs">
+      <div style="font-size:24px">🫁</div>
+      <div style="font-size:15px;font-weight:600;margin-top:6px">หายใจลึกๆ 4-7-8</div>
+      <div class="bcw"><div class="bc" id="bC"></div><div class="bt" id="bT">กดเริ่ม</div></div>
+      <div style="font-size:12px;color:var(--text2)" id="bN">0 / 4 รอบ</div>
+      <div style="margin-top:12px"><button class="tb st" id="bSB" onclick="tB()">เริ่ม</button><button class="tb rs" onclick="rB()">รีเซ็ต</button></div>
+      <div class="ic" style="margin-top:16px;text-align:left">หายใจเข้า 4 วิ → กลั้น 7 วิ → หายใจออก 8 วิ<br>ทำ 4 รอบ ช่วยให้ใจสงบ</div>
+    </div>
+  </div>
+
+  <div class="page" id="timerPage">
+    <div class="ts">
+      <div style="font-size:24px">⏱️</div>
+      <div style="font-size:15px;font-weight:600;margin-top:6px">Worry Time</div>
+      <div style="font-size:12px;color:var(--text2);margin:8px 0">กำหนดเวลากังวล 15 นาที<br>นอกเวลานี้ ปล่อยวางไว้ก่อน</div>
+      <div class="td" id="tD">15:00</div>
+      <div><button class="tb st" id="tSB" onclick="tT()">เริ่ม</button><button class="tb rs" onclick="rT()">รีเซ็ต</button></div>
+    </div>
+  </div>
+
+  <div class="page" id="gratitudePage">
+    <div class="gs">
+      <div style="font-size:24px;text-align:center">🙏</div>
+      <div style="font-size:15px;font-weight:600;text-align:center;margin-top:6px">Gratitude Flip</div>
+      <div style="font-size:12px;color:var(--text2);text-align:center;margin-top:4px;line-height:1.5">จากเรื่องกังวลทั้งหมด มีอะไรที่ขอบคุณได้บ้าง?</div>
+      <div class="ciw" style="margin-top:12px">
+        <input class="ai" id="gI" placeholder="พิมพ์สิ่งที่ขอบคุณ..." onkeydown="if(event.key==='Enter')addG()">
+        <button class="sb" onclick="addG()" style="width:40px;height:40px;font-size:14px">♥</button>
+      </div>
+      <div id="gL" style="margin-top:8px;display:flex;flex-direction:column;gap:4px"></div>
+    </div>
+  </div>
+
+  <div class="page" id="statsPage">
+    <div class="mg"><div style="font-size:13px;font-weight:600;margin-bottom:8px">📈 อารมณ์ 7 วันล่าสุด</div><canvas id="moodCanvas" height="120"></canvas></div>
+    <div class="pp"><div style="font-size:13px;font-weight:600">🧠 Worry Pattern — ความคิดบิดเบือนที่พบบ่อย</div><div class="pp-bar" id="patBar"></div><div style="height:24px"></div></div>
+    <div class="pp"><div style="font-size:13px;font-weight:600;margin-bottom:8px">🏷️ หมวดที่กังวลบ่อยสุด</div><div class="pp-bar" id="catBar"></div><div style="height:24px"></div></div>
+    <div class="research-card">🔬 จากงานวิจัย: 97% ของความกังวลไม่มีเหตุผลจริง<br>85% ไม่เกิดขึ้น + 12% รับมือได้ดีกว่าที่คิด<br><span style="font-size:10px;opacity:.7">Borkovec et al. / LaFreniere & Newman</span></div>
+  </div>
+
+  <div class="page" id="historyPage">
+    <div id="hC"></div>
+    <div class="es" id="hiE"><div class="ei">📅</div><div class="em">ยังไม่มีประวัติ</div></div>
+  </div>
+</div>
+
+<button class="fb" onclick="SP('breathing')" title="หายใจ">🫁</button>
+<div class="mo" id="mO" onclick="if(event.target===this)cM()"><div class="md" id="mC"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+let W=JSON.parse(localStorage.getItem('pw_w')||'[]');
+let G=JSON.parse(localStorage.getItem('pw_g')||'[]');
+let checkins=JSON.parse(localStorage.getItem('pw_ck')||'[]');
+let tI=null,tS=900,tR=false,bI=null,bR2=false,bRd=0;
+let cQ=[],cI=0,cD={};
+const cats=['งาน','เงิน','สุขภาพ','ความสัมพันธ์','อื่นๆ'];
+const catColors=['work','money','health','rel','other'];
+const enc=['จัดการได้อีกเรื่อง 💪','เก่งมาก ✨','ปล่อยวางได้แล้ว 🍃','ใจเบาขึ้นแล้ว 🌿','ทำได้ดีมาก 👏','คุณจัดการได้ 🔥','วางลงได้แล้ว ☁️','ค่อยๆ ไป 🌊'];
+const dist=[
+  {id:'catastrophize',l:'😱 คิดเกินจริง',d:'คิดว่าจะเกิดสิ่งร้ายแรงที่สุด'},
+  {id:'mindread',l:'🔮 คิดแทนคนอื่น',d:'คิดว่ารู้ว่าคนอื่นคิดอะไร'},
+  {id:'allornone',l:'⚫ คิดขาว-ดำ',d:'มองแค่สุดขั้ว ไม่เห็นตรงกลาง'},
+  {id:'blame',l:'👈 โทษตัวเอง',d:'รู้สึกว่าเป็นความผิดตัวเอง'},
+  {id:'filter',l:'🔍 โฟกัสแต่เรื่องร้าย',d:'มองข้ามเรื่องดี เห็นแต่เรื่องแย่'},
+  {id:'none',l:'🤷 ไม่ตรงเลย',d:''}
+];
+const quotes=[
+  {q:'ความกังวลแกล้งทำเป็นว่ามันจำเป็น แต่มันไม่มีประโยชน์อะไรเลย',a:'Eckhart Tolle — The Power of Now'},
+  {q:'เราไม่ได้ทุกข์กับปัญหาจริงมากเท่ากับทุกข์กับปัญหาที่จินตนาการขึ้นมาเอง',a:'Epictetus — นักปรัชญา Stoic'},
+  {q:'คุณจำเรื่องที่กังวลเมื่อปีที่แล้วได้ไหม? แล้วมันเป็นยังไง?',a:'Dale Carnegie — How to Stop Worrying'},
+  {q:'ชีวิตเต็มไปด้วยเคราะห์ร้ายที่น่ากลัว แต่ส่วนใหญ่ไม่เคยเกิดขึ้น',a:'Michel de Montaigne — นักเขียนฝรั่งเศส'},
+  {q:'สิ่งที่ทำร้ายเราไม่ใช่เหตุการณ์ แต่เป็นมุมมองของเราต่อเหตุการณ์นั้น',a:'Marcus Aurelius — Meditations'},
+  {q:'ถ้าอยากหยุดกังวล ให้สมมติว่าสิ่งที่กลัวจะเกิดขึ้นจริง — แล้วคุณจะเห็นว่ามันไม่ร้ายแรงอย่างที่คิด',a:'Seneca — Letters from a Stoic'},
+  {q:'ความกังวลทุกรูปแบบเกิดจากการอยู่กับอนาคตมากเกินไป และอยู่กับปัจจุบันน้อยเกินไป',a:'Eckhart Tolle — The Power of Now'},
+  {q:'ยิ่งมีน้อย ยิ่งกังวลน้อย',a:'พระพุทธเจ้า'},
+  {q:'คิดถึงชีวิตเหมือนนาฬิกาทราย ทำทีละเม็ด ทีละเรื่อง',a:'Dale Carnegie — How to Stop Worrying'},
+  {q:'สัตว์ป่าวิ่งหนีจากอันตรายที่เห็น แต่พอหนีได้แล้วก็ไม่กังวลอีก แต่เราสร้างทุกข์จากสิ่งที่ยังไม่เกิด',a:'Seneca — Letters from a Stoic'},
+  {q:'ความกังวลหมายความว่าจิตใจกำลังควบคุมคุณ ไม่ใช่คุณควบคุมมัน',a:'Eckhart Tolle — Stillness Speaks'},
+  {q:'จงทำวันนี้ให้ดีที่สุด อย่าเอาปัญหาพรุ่งนี้มาปนกับวันนี้',a:'Dale Carnegie — How to Stop Worrying'},
+  {q:'ความกลัวที่จะสูญเสียบางอย่าง ร้ายแรงพอๆ กับการสูญเสียมันจริงๆ',a:'Seneca — Epistles 98.6'},
+  {q:'91% ของสิ่งที่เรากังวล ไม่เคยเกิดขึ้นจริง',a:'งานวิจัย LaFreniere & Newman, 2016'},
+  {q:'ไม่ใช่งานที่ฆ่าคน แต่เป็นความกังวล ความกังวลคือสนิมบนใบมีด',a:'Henry Ward Beecher'},
+  {q:'จิตใจเล็กมีความกังวลเล็กๆ จิตใจที่ใหญ่ไม่มีเวลาให้ความกังวล',a:'Ralph Waldo Emerson'},
+  {q:'ความสุขที่แท้จริงคือการเพลิดเพลินกับปัจจุบัน โดยไม่ต้องพึ่งพาอนาคตอย่างกังวล',a:'Seneca — De Vita Beata'},
+  {q:'วิธีที่ดีที่สุดในการหยุดกังวลเรื่องตัวเอง คือลองทำอะไรเพื่อคนอื่นดูบ้าง',a:'Dale Carnegie — How to Stop Worrying'},
+  {q:'ถ้าปัญหามีทางแก้ ไม่ต้องกังวล ถ้าไม่มีทางแก้ กังวลไปก็ไม่มีประโยชน์',a:'ทะไลลามะ'},
+  {q:'อดีตคือความทรงจำ อนาคตคือจินตนาการ สิ่งที่มีจริงมีแค่ตอนนี้',a:'พุทธศาสนา'},
+];
+
+function sv(){localStorage.setItem('pw_w',JSON.stringify(W));localStorage.setItem('pw_g',JSON.stringify(G));localStorage.setItem('pw_ck',JSON.stringify(checkins));uS()}
+function e(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function fd(i){return new Date(i).toLocaleDateString('th-TH',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}
+function rE(){return enc[Math.floor(Math.random()*enc.length)]}
+function sT(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function oM(){document.getElementById('mO').classList.add('active')}
+function cM(){document.getElementById('mO').classList.remove('active')}
+function aR(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
+function tdy(){return new Date().toDateString()}
+
+// ===== QUOTE =====
+function showQuote(){
+  const day=Math.floor(Date.now()/(1000*60*60*24));
+  const q=quotes[day%quotes.length];
+  document.getElementById('quoteCard').innerHTML=`<div style="font-size:20px">🌿</div><div class="qq">"${q.q}"</div><div class="qa">— ${q.a}</div>`;
+}
+
+// ===== CHECKIN =====
+function showCheckin(){
+  const done=checkins.find(c=>c.date===tdy());
+  const card=document.getElementById('checkinCard');
+  if(done){card.style.display='none';return}
+  card.style.display='block';
+  const lvls=['😌','🙂','😐','😟','😰'];
+  document.getElementById('checkinLevels').innerHTML=lvls.map((em,i)=>`<button class="ck-lv" onclick="doCk(${i+1})">${em}</button>`).join('');
+}
+
+function doCk(lv){
+  checkins.push({date:tdy(),level:lv,ts:new Date().toISOString()});
+  sv();document.getElementById('checkinCard').style.display='none';
+  sT(['ใจเบามาก!','วันนี้โอเค!','กลางๆ นะ','กังวลนิดหน่อย','ลองหายใจลึกๆ 🫁'][lv-1]);
+}
+
+// ===== STREAK =====
+function calcStreak(){
+  let streak=0;const now=new Date();
+  for(let i=0;i<365;i++){
+    const d=new Date(now);d.setDate(d.getDate()-i);
+    const ds=d.toDateString();
+    if(checkins.find(c=>c.date===ds)||W.find(w=>new Date(w.date).toDateString()===ds)){streak++}else{break}
+  }
+  const chip=document.getElementById('streakChip');
+  if(streak>1){chip.style.display='flex';document.getElementById('s4').textContent=streak}else{chip.style.display='none'}
+}
+
+// ===== ADD WORRY =====
+function addW(){
+  const input=document.getElementById('wI');const t=input.value.trim();if(!t)return;
+  W.push({id:Date.now(),text:t,status:'pending',action:'',distortion:'',cat:'',carnegie:{},dare:false,date:new Date().toISOString()});
+  input.value='';aR(input);sv();rH();sT('เพิ่มแล้ว ✍️');
+}
+document.getElementById('wI').addEventListener('keydown',ev=>{if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();addW()}});
+
+function rH(){
+  const p=W.filter(w=>w.status==='pending');const l=document.getElementById('pL');const wr=document.getElementById('caW');const em=document.getElementById('hE');
+  if(!p.length){l.innerHTML='';wr.innerHTML='';em.style.display='block';return}
+  em.style.display='none';
+  l.innerHTML=p.map(w=>`<div class="pi"><span class="tx">${e(w.text)}</span>
+    <select onchange="W.find(x=>x.id===${w.id}).cat=this.value;sv()"><option value="">หมวด</option>${cats.map((c,i)=>`<option value="${c}" ${w.cat===c?'selected':''}>${c}</option>`).join('')}</select>
+    <button class="cb" onclick="sC(${w.id})">จัดฝั่ง</button><button class="db" onclick="dW(${w.id})">✕</button></div>`).join('');
+  wr.innerHTML=p.length>1?`<button class="cab" onclick="cA()">จัดฝั่งทั้งหมด (${p.length})</button>`:'';
+}
+
+function dW(id){W=W.filter(w=>w.id!==id);sv();rH();rS()}
+function sC(id){cQ=[id];cI=0;cD={};s1(id)}
+function cA(){cQ=W.filter(w=>w.status==='pending').map(w=>w.id);cI=0;cD={};s1(cQ[0])}
+function gP(){return cQ.length>1?`<div style="font-size:11px;color:var(--text3);margin-bottom:6px">${cI+1}/${cQ.length}</div>`:''}
+function mS(a){return `<div class="si">${[0,1,2].map(i=>`<div class="sd ${i<a?'d':''} ${i===a?'a':''}"></div>`).join('')}</div>`}
+
+// STEP 1: Distortion
+function s1(id){
+  const w=W.find(x=>x.id===id);if(!w)return;
+  document.getElementById('mC').innerHTML=`<div class="mh"></div>${gP()}${mS(0)}
+    <div class="mt">🧠 เรื่องนี้...</div><div class="mw">${e(w.text)}</div>
+    <div class="ms">คุณกำลัง "คิดแบบไหน" อยู่?</div>
+    <div class="cg">${dist.map(d=>`<button class="cp" onclick="sD(this,'${d.id}')" title="${d.d}">${d.l}</button>`).join('')}</div>
+    <div id="dH" style="font-size:11px;color:var(--text3);min-height:18px;margin-bottom:10px"></div>
+    <button class="mcb am" onclick="s2(${id})">ต่อไป →</button>
+    <button class="skb" onclick="cD.distortion='';s2(${id})">ข้าม</button>`;
+  oM();
+}
+
+function sD(el,id){el.parentElement.querySelectorAll('.cp').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');cD.distortion=id;
+  const d=dist.find(x=>x.id===id);const h=document.getElementById('dH');if(d&&d.d){h.textContent=d.d;h.style.color='var(--amber)'}else{h.textContent=''}}
+
+// STEP 2: Control?
+function s2(id){
+  const w=W.find(x=>x.id===id);
+  const n=cD.distortion&&cD.distortion!=='none'?`<div style="padding:8px 12px;border-radius:6px;background:var(--amber-dim);color:var(--amber);font-size:11px;margin-bottom:12px">🧠 สมองอาจกำลังหลอกคุณอยู่</div>`:'';
+  document.getElementById('mC').innerHTML=`<div class="mh"></div>${gP()}${mS(1)}<div class="mt">ลงมือทำเองได้ไหม?</div><div class="mw">${e(w.text)}</div>${n}
+    <div class="ch">
+      <button class="chb g" onclick="s3(${id},'control')"><div class="ic">🟢</div><div>ทำได้เลย</div></button>
+      <button class="chb a" onclick="s3(${id},'partial')"><div class="ic">🟡</div><div>ทำได้บางส่วน</div></button>
+      <button class="chb r" onclick="s3(${id},'letgo')"><div class="ic">🔴</div><div>ทำอะไรไม่ได้เลย</div></button>
+    </div>`;
+}
+
+// STEP 3
+function s3(id,type){
+  cD.type=type;const w=W.find(x=>x.id===id);
+  if(type==='control'||type==='partial'){
+    const n=type==='partial'?`<div style="font-size:12px;color:var(--amber);margin-bottom:12px">ส่วนที่ทำได้ → โฟกัสตรงนั้น</div>`:'';
+    document.getElementById('mC').innerHTML=`<div class="mh"></div>${gP()}${mS(2)}<div class="mt">ต้องทำอะไร?</div><div class="mw">${e(w.text)}</div>${n}
+      <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">เขียน action step สั้นๆ</label>
+      <input class="ai" id="aI" placeholder="เช่น พรุ่งนี้ทำส่วน A ก่อน" onkeydown="if(event.key==='Enter')fC(${id})">
+      <button class="mcb g" onclick="fC(${id})">✅ เพิ่ม Action</button>`;
+    setTimeout(()=>document.getElementById('aI')?.focus(),300);
+  }else{sCar(id)}
+}
+
+function fC(id){const w=W.find(x=>x.id===id);if(!w)return;w.status='control';w.action=document.getElementById('aI')?.value?.trim()||'';w.distortion=cD.distortion||'';sv();rH();rS();nF()}
+
+// Carnegie
+function sCar(id){
+  const w=W.find(x=>x.id===id);cD.carnegie={};
+  document.getElementById('mC').innerHTML=`<div class="mh"></div>${gP()}${mS(2)}<div class="mt">📋 ถามตัวเอง 3 ข้อ</div><div class="mw">${e(w.text)}</div>
+    <div style="margin-bottom:14px"><div style="font-size:13px;font-weight:500;margin-bottom:8px">1. แย่สุดที่จะเกิดคืออะไร?</div>
+      <div class="cg"><button class="cp" onclick="xC(this,'worst','ไม่มีผลมาก')">ไม่มีผลมาก</button><button class="cp" onclick="xC(this,'worst','มีผลบ้าง แต่รับได้')">มีผลบ้าง แต่รับได้</button><button class="cp" onclick="xC(this,'worst','ผลกระทบหนัก')">ผลกระทบหนัก</button></div></div>
+    <div style="margin-bottom:14px"><div style="font-size:13px;font-weight:500;margin-bottom:8px">2. ยอมรับสิ่งที่แย่สุดได้ไหม?</div>
+      <div class="cg"><button class="cp" onclick="xC(this,'accept','ยอมรับได้')">ยอมรับได้</button><button class="cp" onclick="xC(this,'accept','ต้องใช้เวลา')">ต้องใช้เวลา</button><button class="cp" onclick="xC(this,'accept','ยากมาก')">ยากมาก</button></div></div>
+    <div style="margin-bottom:14px"><div style="font-size:13px;font-weight:500;margin-bottom:8px">3. ทำอะไรได้บ้างเพื่อให้ดีขึ้น?</div>
+      <div class="cg"><button class="cp" onclick="xC(this,'improve','รอเวลา')">รอเวลา</button><button class="cp" onclick="xC(this,'improve','ปรึกษาคนอื่น')">ปรึกษาคนอื่น</button><button class="cp" onclick="xC(this,'improve','ทำใจ')">ทำใจ</button><button class="cp" onclick="xC(this,'improve','ไม่มีอะไรทำได้')">ไม่มีอะไรทำได้</button></div></div>
+    <button class="mcb b" onclick="sDR(${id})">ต่อไป → DARE</button>`;
+}
+function xC(el,k,v){el.parentElement.querySelectorAll('.cp').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');cD.carnegie=cD.carnegie||{};cD.carnegie[k]=v}
+
+// DARE
+function sDR(id){
+  const w=W.find(x=>x.id===id);
+  document.getElementById('mC').innerHTML=`<div class="mh"></div><div class="mt">🏃 DARE Response</div><div class="mw">${e(w.text)}</div><div class="ms">เผชิญหน้ากับความกังวล ทีละขั้น</div>
+    <div class="dare-s as" id="d1"><div style="font-size:11px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">D — Diffuse ลดแรง</div><div style="font-size:13px;color:var(--text2)">"ก็แค่ความคิด ไม่ใช่ความจริง"</div><button class="dare-btn" style="background:var(--blue-dim);color:var(--blue)" onclick="dN(2)">เข้าใจแล้ว ✓</button></div>
+    <div class="dare-s" id="d2" style="opacity:.4"><div style="font-size:11px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">A — Accept ยอมรับ</div><div style="font-size:13px;color:var(--text2)">"ยอมรับว่ากังวลอยู่ ไม่ต้องสู้กับมัน"</div><button class="dare-btn" style="background:var(--purple-dim);color:var(--purple);display:none" id="d2b" onclick="dN(3)">ยอมรับแล้ว ✓</button></div>
+    <div class="dare-s" id="d3" style="opacity:.4"><div style="font-size:11px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">R — Run Toward วิ่งเข้าหา</div><div style="font-size:13px;color:var(--text2)">"เรื่องนี้จะทำยังไงก็ได้ ลองดู"</div><button class="dare-btn" style="background:var(--amber-dim);color:var(--amber);display:none" id="d3b" onclick="dN(4)">พร้อมแล้ว ✓</button></div>
+    <div class="dare-s" id="d4" style="opacity:.4"><div style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">E — Engage กลับไปทำสิ่งที่ทำ</div><div style="font-size:13px;color:var(--text2)">"กลับไปใช้ชีวิต ไม่ต้องรอให้หายกังวล"</div><button class="dare-btn" style="background:var(--green-dim);color:var(--green);display:none" id="d4b" onclick="fD(${id})">ปล่อยวาง 🍃</button></div>`;
+}
+function dN(s){for(let i=1;i<s;i++){const el=document.getElementById('d'+i);el.classList.remove('as');el.classList.add('ds')}const c=document.getElementById('d'+s);c.style.opacity='1';c.classList.add('as');const b=document.getElementById('d'+s+'b');if(b)b.style.display='block';c.scrollIntoView({behavior:'smooth',block:'center'})}
+function fD(id){const w=W.find(x=>x.id===id);if(!w)return;w.status='letgo';w.distortion=cD.distortion||'';w.carnegie=cD.carnegie||{};w.dare=true;sv();rH();rS();nF()}
+
+function nF(){cI++;sT(rE());if(cI<cQ.length){cD={};s1(cQ[cI])}else{sEF()}}
+
+// END FLOW
+function sEF(){
+  document.getElementById('mC').innerHTML=`<div class="mh"></div><div style="text-align:center;font-size:24px;margin-bottom:6px">🙏</div>
+    <div class="mt" style="text-align:center">จัดฝั่งครบแล้ว!</div><div class="ms" style="text-align:center">มีอะไรที่ขอบคุณได้บ้าง?</div>
+    <input class="ai" id="eG" placeholder="พิมพ์สิ่งที่ขอบคุณ..." onkeydown="if(event.key==='Enter')eFN()">
+    <button class="mcb am" onclick="eFN()">🙏 ต่อไป</button><button class="skb" onclick="eFN()">ข้าม</button>`;
+}
+function eFN(){
+  const g=document.getElementById('eG');if(g&&g.value.trim()){G.push({id:Date.now(),text:g.value.trim(),date:new Date().toISOString()});sv()}
+  document.getElementById('mC').innerHTML=`<div class="mh"></div><div style="text-align:center;font-size:24px;margin-bottom:6px">🎯</div>
+    <div class="mt" style="text-align:center">ตอนนี้อะไรสำคัญกับคุณที่สุด?</div><div class="ms" style="text-align:center">เลือก 1 อย่าง แล้วโฟกัสตรงนั้น</div>
+    <div class="ch">
+      <button class="chb t" onclick="fA('ครอบครัว')"><div class="ic">👨‍👩‍👧</div><div>ครอบครัว</div></button>
+      <button class="chb b" onclick="fA('สุขภาพ')"><div class="ic">💪</div><div>สุขภาพ</div></button>
+      <button class="chb g" onclick="fA('งาน')"><div class="ic">💼</div><div>งาน / การเงิน</div></button>
+      <button class="chb p" onclick="fA('ความสุข')"><div class="ic">😊</div><div>ความสุขของตัวเอง</div></button>
+      <button class="chb a" onclick="fA('ความสัมพันธ์')"><div class="ic">❤️</div><div>ความสัมพันธ์</div></button>
+    </div><button class="skb" onclick="fA('')">ข้าม</button>`;
+}
+function fA(v){cM();sT(v?`โฟกัส: ${v} 🎯`:'จัดการครบแล้ว ✨');setTimeout(()=>sT('ลองหายใจลึกๆ ก่อนไป 🫁'),2500)}
+
+// RELEASE
+function rlW(id){const w=W.find(x=>x.id===id);if(!w)return;const c=document.getElementById('c-'+id);if(c){c.classList.add('fly');setTimeout(()=>{w.status='released';w.releasedDate=new Date().toISOString();sv();rS();sT('ปล่อยวางแล้ว 🍃')},800)}else{w.status='released';w.releasedDate=new Date().toISOString();sv();rS()}}
+
+// RENDER SUMMARY
+function rS(){
+  const ct=W.filter(w=>w.status==='control'),lg=W.filter(w=>w.status==='letgo'),rl=W.filter(w=>w.status==='released');
+  const em=document.getElementById('sE');
+  if(!ct.length&&!lg.length&&!rl.length){em.style.display='block';['ctrlS','lgS','rlS'].forEach(s=>document.getElementById(s).style.display='none');return}
+  em.style.display='none';
+  const catTag=(w)=>w.cat?`<div class="tag-g"><span class="tag ${catColors[cats.indexOf(w.cat)]||'other'}">${w.cat}</span></div>`:'';
+  const distTag=(w)=>w.distortion&&w.distortion!=='none'?`<div class="wd">🧠 ${dist.find(d=>d.id===w.distortion)?.l||''}</div>`:'';
+
+  document.getElementById('ctrlS').style.display=ct.length?'block':'none';
+  document.getElementById('ctrlL').innerHTML=ct.map(w=>`<div class="wc" id="c-${w.id}"><div class="wt">${e(w.text)}</div>${w.action?`<div class="wa">→ ${e(w.action)}</div>`:''}${distTag(w)}${catTag(w)}<div class="wm">${fd(w.date)}</div><button class="db" onclick="dW(${w.id})" style="position:absolute;top:8px;right:8px">✕</button></div>`).join('');
+
+  document.getElementById('lgS').style.display=lg.length?'block':'none';
+  document.getElementById('lgL').innerHTML=lg.map(w=>`<div class="wc" id="c-${w.id}"><div class="wt">${e(w.text)}</div>${distTag(w)}${w.dare?'<div style="font-size:10px;color:var(--blue);margin-top:3px">🏃 ผ่าน DARE แล้ว</div>':''}${catTag(w)}<div class="wm">${fd(w.date)}</div><button class="lb" onclick="rlW(${w.id})">🍃 ปล่อยวาง</button><button class="db" onclick="dW(${w.id})" style="position:absolute;top:8px;right:8px">✕</button></div>`).join('');
+
+  document.getElementById('rlS').style.display=rl.length?'block':'none';
+  document.getElementById('rlL').innerHTML=rl.map(w=>`<div class="wc rel"><div class="wt" style="text-decoration:line-through">${e(w.text)}</div><div class="wm">${fd(w.releasedDate||w.date)}</div><button class="db" onclick="dW(${w.id})" style="position:absolute;top:8px;right:8px">✕</button></div>`).join('');
+}
+
+// GRATITUDE
+function addG(){const i=document.getElementById('gI');const t=i.value.trim();if(!t)return;G.push({id:Date.now(),text:t,date:new Date().toISOString()});i.value='';sv();rG();sT('ขอบคุณที่ขอบคุณ 🙏')}
+function rG(){const l=document.getElementById('gL');const td=tdy();l.innerHTML=G.filter(g=>new Date(g.date).toDateString()===td).map(g=>`<div class="gi">🙏 ${e(g.text)}</div>`).join('')}
+
+// BREATHING
+function tB(){bR2?spB():stB()}
+function stB(){bR2=true;bRd=0;document.getElementById('bSB').textContent='หยุด';document.getElementById('bSB').className='tb sp';rBC()}
+function rBC(){if(!bR2)return;if(bRd>=4){spB();sT('ครบ 4 รอบ ใจสงบขึ้นไหม? 🌿');return}
+  const c=document.getElementById('bC'),t=document.getElementById('bT'),n=document.getElementById('bN');
+  c.className='bc inh';t.textContent='หายใจเข้า...';t.style.color='var(--teal)';
+  setTimeout(()=>{if(!bR2)return;c.className='bc hld';t.textContent='กลั้น...';t.style.color='var(--amber)';
+    setTimeout(()=>{if(!bR2)return;c.className='bc exh';t.textContent='หายใจออก...';t.style.color='var(--purple)';
+      setTimeout(()=>{if(!bR2)return;bRd++;n.textContent=`${bRd} / 4 รอบ`;rBC()},8000)},7000)},4000)}
+function spB(){bR2=false;document.getElementById('bSB').textContent='เริ่ม';document.getElementById('bSB').className='tb st';document.getElementById('bC').className='bc';document.getElementById('bT').textContent='กดเริ่ม';document.getElementById('bT').style.color='var(--text)'}
+function rB(){spB();bRd=0;document.getElementById('bN').textContent='0 / 4 รอบ'}
+
+// TIMER
+function tT(){if(tR){clearInterval(tI);tR=false;document.getElementById('tSB').textContent='เริ่ม';document.getElementById('tSB').className='tb st'}
+  else{tR=true;document.getElementById('tSB').textContent='หยุด';document.getElementById('tSB').className='tb sp';
+    tI=setInterval(()=>{tS--;if(tS<=0){clearInterval(tI);tR=false;tS=0;document.getElementById('tSB').textContent='เริ่ม';document.getElementById('tSB').className='tb st';sT('หมดเวลากังวล! ปล่อยวางได้แล้ว 🍃')}uTD()},1000)}}
+function rT(){clearInterval(tI);tR=false;tS=900;uTD();document.getElementById('tSB').textContent='เริ่ม';document.getElementById('tSB').className='tb st'}
+function uTD(){const m=Math.floor(tS/60),s=tS%60;document.getElementById('tD').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+
+// MOOD GRAPH
+function drawMood(){
+  const canvas=document.getElementById('moodCanvas');const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth*2;canvas.height=240;ctx.scale(2,2);
+  const w=canvas.offsetWidth,h=120;
+  const days=[];const now=new Date();
+  for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);days.push({ds:d.toDateString(),label:d.toLocaleDateString('th-TH',{weekday:'short'})})}
+
+  ctx.clearRect(0,0,w,h);
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;
+  for(let i=1;i<=5;i++){const y=10+(i-1)*22;ctx.beginPath();ctx.moveTo(30,y);ctx.lineTo(w-10,y);ctx.stroke()}
+
+  const pts=days.map((d,i)=>{const ck=checkins.find(c=>c.date===d.ds);return {x:30+i*((w-40)/6),y:ck?10+(ck.level-1)*22:null,label:d.label}});
+
+  // Line
+  ctx.strokeStyle='var(--teal)';ctx.lineWidth=2;ctx.beginPath();let started=false;
+  pts.forEach(p=>{if(p.y!==null){if(!started){ctx.moveTo(p.x,p.y);started=true}else{ctx.lineTo(p.x,p.y)}}});
+  ctx.stroke();
+
+  // Dots + labels
+  const emojis=['😌','🙂','😐','😟','😰'];
+  pts.forEach(p=>{
+    ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='10px var(--font)';ctx.textAlign='center';ctx.fillText(p.label,p.x,h-4);
+    if(p.y!==null){ctx.fillStyle='var(--teal)';ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fill();
+      const lv=Math.round((p.y-10)/22)+1;ctx.font='14px sans-serif';ctx.fillText(emojis[lv-1],p.x,p.y-10)}
+  });
+
+  if(!checkins.length){ctx.fillStyle='var(--text3)';ctx.font='12px var(--font)';ctx.textAlign='center';ctx.fillText('ยังไม่มีข้อมูล — ลอง Check-in ดู',w/2,h/2)}
+}
+
+// WORRY PATTERN
+function drawPattern(){
+  const classified=W.filter(w=>w.distortion&&w.distortion!=='none');
+  const counts={};dist.filter(d=>d.id!=='none').forEach(d=>counts[d.id]=0);
+  classified.forEach(w=>{if(counts[w.distortion]!==undefined)counts[w.distortion]++});
+  const max=Math.max(...Object.values(counts),1);
+  const bar=document.getElementById('patBar');
+  bar.innerHTML=Object.keys(counts).map(k=>{const d=dist.find(x=>x.id===k);const pct=counts[k]/max*100;
+    return `<div class="pp-b" style="height:${Math.max(pct,5)}%;background:${counts[k]?'var(--amber-dim)':'var(--bg3)'}"><div class="pp-v">${counts[k]||''}</div><div class="pp-l">${d?.l?.slice(2)||''}</div></div>`}).join('');
+}
+
+// CATEGORY PATTERN
+function drawCatPattern(){
+  const classified=W.filter(w=>w.cat);
+  const counts={};cats.forEach(c=>counts[c]=0);
+  classified.forEach(w=>{if(counts[w.cat]!==undefined)counts[w.cat]++});
+  const max=Math.max(...Object.values(counts),1);
+  const bar=document.getElementById('catBar');
+  const colors=['var(--blue-dim)','var(--green-dim)','var(--rose-dim)','var(--purple-dim)','var(--amber-dim)'];
+  bar.innerHTML=cats.map((c,i)=>{const pct=counts[c]/max*100;
+    return `<div class="pp-b" style="height:${Math.max(pct,5)}%;background:${counts[c]?colors[i]:'var(--bg3)'}"><div class="pp-v">${counts[c]||''}</div><div class="pp-l">${c}</div></div>`}).join('');
+}
+
+// HISTORY
+function rHist(){
+  const cl=W.filter(w=>w.status!=='pending');
+  if(!cl.length){document.getElementById('hiE').style.display='block';document.getElementById('hC').innerHTML='';return}
+  document.getElementById('hiE').style.display='none';
+  const gr={};cl.forEach(w=>{const d=new Date(w.date).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});if(!gr[d])gr[d]=[];gr[d].push(w)});
+  let h='';Object.keys(gr).reverse().forEach(d=>{h+=`<div class="hd"><div class="hdl">${d}</div>`;
+    gr[d].forEach(w=>{const s=w.status==='control'?'✅ ควบคุมได้':w.status==='letgo'?'🍃 ปล่อยวาง':'✨ ปล่อยแล้ว';
+      h+=`<div class="wc ${w.status==='released'?'rel':''}"><div style="font-size:10px;color:var(--text3);margin-bottom:3px">${s}</div><div class="wt">${e(w.text)}</div>${w.action?`<div class="wa">→ ${e(w.action)}</div>`:''}${w.distortion&&w.distortion!=='none'?`<div class="wd">🧠 ${dist.find(x=>x.id===w.distortion)?.l||''}</div>`:''}${w.cat?`<div class="tag-g"><span class="tag ${catColors[cats.indexOf(w.cat)]||'other'}">${w.cat}</span></div>`:''}</div>`});h+='</div>'});
+  document.getElementById('hC').innerHTML=h;
+}
+
+// NAV
+function SP(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nt').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.hbtn').forEach(x=>x.classList.remove('active'));
+  document.getElementById(p+'Page').classList.add('active');
+  const tm={home:'tHome',summary:'tSum',gratitude:'tGrat'},bm={breathing:'hBreath',timer:'hTimer',stats:'hStats',history:'hHist'};
+  if(tm[p])document.getElementById(tm[p]).classList.add('active');if(bm[p])document.getElementById(bm[p]).classList.add('active');
+  if(p==='summary')rS();if(p==='gratitude')rG();if(p==='history')rHist();
+  if(p==='stats'){setTimeout(()=>{drawMood();drawPattern();drawCatPattern()},100)}
+}
+
+function uS(){
+  document.getElementById('s1').textContent=W.filter(w=>w.status==='control').length;
+  document.getElementById('s2').textContent=W.filter(w=>w.status==='letgo').length;
+  document.getElementById('s3').textContent=W.filter(w=>w.status==='released').length;
+  calcStreak();
+}
+
+// INIT
+showQuote();showCheckin();rH();rS();uS();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
